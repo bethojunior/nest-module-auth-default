@@ -4,11 +4,16 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) { }
 
   async create(createAuthDto: CreateAuthDto): Promise<User | Error> {
     const { email } = createAuthDto;
@@ -30,10 +35,8 @@ export class AuthService {
     });
   }
 
-  async login(loginAuthDto: LoginAuthDto): Promise<User | null> {
+  async login({ loginAuthDto }: { loginAuthDto: LoginAuthDto; }): Promise<{ accessToken: string, user: UserEntity }> {
     const user = await this.findOneByEmail(loginAuthDto.email);
-    console.log(user);
-    console.log(loginAuthDto.password);
 
     const isPasswordValid = await bcrypt.compare(loginAuthDto.password, user.password);
 
@@ -41,9 +44,16 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    if (user) return user;
+    const payload = { sub: user.id, email: user.email };
 
-    return null;
+    const accessToken = this.jwtService.sign(payload);
+
+    const { password, ...userWithoutPassword } = user;
+
+    return {
+      user: userWithoutPassword,
+      accessToken,
+    };
   }
 
   async findOneByEmail(email: string): Promise<User | null> {

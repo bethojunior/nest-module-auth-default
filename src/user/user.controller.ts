@@ -11,7 +11,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +23,7 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.userService.findAll();
   }

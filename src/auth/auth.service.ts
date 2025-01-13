@@ -13,16 +13,14 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async create(createAuthDto: CreateAuthDto): Promise<User | Error> {
     const { email } = createAuthDto;
 
     const existingUser = await this.findOneByEmail(email);
 
-    if (existingUser) {
-      throw new Error('Email already exists');
-    }
+    if (existingUser) throw new Error('Email already exists');
 
     const hashedPassword = await bcrypt.hash(createAuthDto.password, 10);
 
@@ -35,25 +33,42 @@ export class AuthService {
     });
   }
 
-  async login({ loginAuthDto }: { loginAuthDto: LoginAuthDto; }): Promise<{ accessToken: string, user: UserEntity }> {
+  async login({
+    loginAuthDto,
+  }: {
+    loginAuthDto: LoginAuthDto;
+  }): Promise<{ accessToken: string; user: UserEntity }> {
     const user = await this.findOneByEmail(loginAuthDto.email);
 
-    const isPasswordValid = await bcrypt.compare(loginAuthDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginAuthDto.password,
+      user.password,
+    );
 
-    if (!isPasswordValid) {
+    if (!isPasswordValid)
       throw new UnauthorizedException('Invalid credentials');
-    }
 
     const payload = { sub: user.id, email: user.email };
 
     const accessToken = this.jwtService.sign(payload);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
 
     return {
       user: userWithoutPassword,
       accessToken,
     };
+  }
+
+
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.findOneByEmail(email);
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
@@ -85,4 +100,3 @@ export class AuthService {
     });
   }
 }
-

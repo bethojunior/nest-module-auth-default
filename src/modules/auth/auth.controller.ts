@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   HttpException,
@@ -13,7 +12,7 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -39,5 +38,4 @@ export class AuthController {
       );
     }
   }
-
 }

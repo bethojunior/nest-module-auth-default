@@ -6,7 +6,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { RoleEnum } from 'src/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -55,12 +56,19 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
 
+    // return {
+    //   user: userWithoutPassword,
+    //   accessToken,
+    // };
+
     return {
-      user: userWithoutPassword,
+      user: {
+        ...userWithoutPassword,
+        role: user.role as RoleEnum,
+      } as UserEntity,
       accessToken,
     };
   }
-
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.findOneByEmail(email);

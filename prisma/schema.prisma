@@ -7,13 +7,130 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+enum Role {
+  JEDI
+  ENTERPRISE
+  TEACHER
+  STUDENT
+}
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Enterprise {
+  id    String @id @default(uuid()) @map("_id")
+  name  String
+  email String @unique
+  cnpj  String @unique
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
+
+  user User[]
+
+  @@map("enterprises")
+}
+
+model User {
+  id       String  @id @default(uuid()) @map("_id")
+  name     String
+  email    String  @unique
+  password String
+  isActive Boolean @default(true)
+  role     Role    @default(ENTERPRISE)
+
+  enterpriseId String?     @map("enterpriseId")
+  enterprise   Enterprise? @relation(fields: [enterpriseId], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  class   Class[]
+  student Student[]
+  content Content[]
+  subject Subject[]
+
+  @@map("users")
+}
+
+model Class {
+  id       String  @id @default(uuid()) @map("_id")
+  name     String
+  code     String  @unique
+  isActive Boolean @default(true)
+
+  authorId String @map("authorId")
+  author   User   @relation(fields: [authorId], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  student Student[]
+  content Content[]
+
+  @@map("classes")
+}
+
+model Student {
+  id String @id @default(uuid()) @map("_id")
+
+  userId  String @map("userId")
+  classId String @map("classId")
+
+  user  User  @relation(fields: [userId], references: [id])
+  class Class @relation(fields: [classId], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  @@map("students")
+}
+
+model Content {
+  id       String  @id @default(uuid()) @map("_id")
+  title    String
+  url      String?
+  content  String?
+  isActive Boolean @default(true)
+
+  authorId String @map("authorId")
+  classId  String @map("classId")
+
+  author User  @relation(fields: [authorId], references: [id])
+  class  Class @relation(fields: [classId], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  @@map("contents")
+}
+
+model Subject {
+  id       String  @id @default(uuid()) @map("_id")
+  name     String
+  code     String  @unique
+  isActive Boolean @default(true)
+
+  authorId String @map("authorId")
+  author   User   @relation(fields: [authorId], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  @@map("subjetcs")
+}
+
+model Resource {
+  id   String @id @default(uuid()) @map("_id")
+  name String
+  url  String @unique
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  @@map("resources")
 }

@@ -11,21 +11,25 @@ export class UserService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async findAll(): Promise<PaginatedUsers | Error | string> {
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedUsers | Error | string> {
     try {
-      return await this.repository.findAll();
+      return await this.repository.findAll(page, limit);
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
       return error.message;
     }
   }
 
-  findOne(id: string) {
-    return this.prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
+  async findOne(id: string) {
+    try {
+      return await this.repository.findOne(id);
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+      return error.message;
+    }
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {

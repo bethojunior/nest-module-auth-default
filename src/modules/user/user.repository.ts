@@ -22,11 +22,28 @@ export class UserRepository {
       this.prisma.user.count(),
     ]);
 
-    const usersFormatted: UserFindAll[] = users.map((user) => ({
-      ...user,
-      role: user.role as RoleEnum,
-    }));
+    const usersFormatted: UserFindAll[] = users.map(
+      ({ password, ...user }) => ({
+        ...user,
+        role: user.role as RoleEnum,
+      }),
+    );
 
     return { users: usersFormatted, total };
+  }
+
+  async findOne(id: string): Promise<UserFindAll | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        enterprise: true,
+      },
+    });
+
+    if (!user) return null;
+
+    const { password, ...userWithoutPassword } = user;
+
+    return { ...userWithoutPassword, role: user.role as RoleEnum };
   }
 }

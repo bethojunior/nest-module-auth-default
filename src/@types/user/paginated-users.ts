@@ -5,7 +5,6 @@ interface UserFindAll {
   id: string;
   name: string;
   email: string;
-  password: string;
   isActive: boolean;
   role: RoleEnum;
   enterpriseId: string | null;

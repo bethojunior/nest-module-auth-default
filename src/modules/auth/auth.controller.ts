@@ -27,10 +27,10 @@ export class AuthController {
     }
   }
 
-  @Post('create')
+  @Post('register')
   async create(@Body() createAuthDto: CreateAuthDto) {
     try {
-      await this.authService.create(createAuthDto);
+      return await this.authService.create(createAuthDto);
     } catch (error) {
       throw new HttpException(
         'Failed to create user: ' + error.message,

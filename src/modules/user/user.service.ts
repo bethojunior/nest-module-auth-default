@@ -1,24 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserRepository } from './user.repository';
+import { PaginatedUsers } from 'src/@types/user/paginated-users';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(
+    private readonly repository: UserRepository,
+    private readonly prisma: PrismaService,
+  ) {}
 
-  findAll() {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        created_at: true,
-        updated_at: true,
-      },
-    });
+  async findAll(): Promise<PaginatedUsers | Error | string> {
+    try {
+      return await this.repository.findAll();
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+      return error.message;
+    }
   }
 
   findOne(id: string) {
@@ -29,11 +28,11 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} user`;
   }
 }

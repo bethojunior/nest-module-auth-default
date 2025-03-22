@@ -23,7 +23,6 @@ export class StudentController {
   }
 
   @Get()
-  
   findAll() {
     return this.studentService.findAll();
   }

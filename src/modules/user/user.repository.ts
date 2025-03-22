@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginatedUsers, UserFindAll } from 'src/@types/user/paginated-users';
 import { RoleEnum } from 'src/enums/role.enum';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserRepository {
@@ -41,6 +42,37 @@ export class UserRepository {
     });
 
     if (!user) return null;
+
+    const { password, ...userWithoutPassword } = user;
+
+    return { ...userWithoutPassword, role: user.role as RoleEnum };
+  }
+
+  async update(id: string, data: Partial<UpdateUserDto>): Promise<UserFindAll> {
+    const user = await this.prisma.user.update({
+      where: { id },
+      data,
+      include: {
+        enterprise: true,
+      },
+    });
+
+    const { password, ...userWithoutPassword } = user;
+
+    return { ...userWithoutPassword, role: user.role as RoleEnum };
+  }
+
+  async remove(id: string): Promise<UserFindAll> {
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: {
+        deleted_at: new Date(),
+        isActive: false,
+      },
+      include: {
+        enterprise: true,
+      },
+    });
 
     const { password, ...userWithoutPassword } = user;
 

@@ -32,11 +32,21 @@ export class UserService {
     }
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    try {
+      return await this.repository.update(id, updateUserDto);
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+      return error.message;
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    try {
+      return await this.repository.remove(id);
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+      return error.message;
+    }
   }
 }

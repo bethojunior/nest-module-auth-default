@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserRepository } from './user.repository';
-import { PaginatedUsers } from 'src/@types/user/paginated-users';
+import { IUserFilter, IPaginatedUsers } from 'src/@types/user/paginated-users';
 
 @Injectable()
 export class UserService {
@@ -14,7 +14,7 @@ export class UserService {
   async findAll(
     page: number = 1,
     limit: number = 10,
-  ): Promise<PaginatedUsers | Error | string> {
+  ): Promise<IPaginatedUsers | Error | string> {
     try {
       return await this.repository.findAll(page, limit);
     } catch (error) {
@@ -23,7 +23,7 @@ export class UserService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<IUserFilter | Error | string> {
     try {
       return await this.repository.findOne(id);
     } catch (error) {
@@ -32,7 +32,10 @@ export class UserService {
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<IUserFilter | Error | string> {
     try {
       return await this.repository.update(id, updateUserDto);
     } catch (error) {
@@ -41,7 +44,7 @@ export class UserService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<IUserFilter | Error | string> {
     try {
       return await this.repository.remove(id);
     } catch (error) {

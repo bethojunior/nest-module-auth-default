@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PaginatedUsers, UserFindAll } from 'src/@types/user/paginated-users';
+import { IPaginatedUsers, IUserFilter } from 'src/@types/user/paginated-users';
 import { RoleEnum } from 'src/enums/role.enum';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -8,7 +8,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(page: number = 1, limit: number = 10): Promise<PaginatedUsers> {
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<IPaginatedUsers> {
     const skip = (page - 1) * limit;
 
     const [users, total] = await this.prisma.$transaction([
@@ -23,7 +26,7 @@ export class UserRepository {
       this.prisma.user.count(),
     ]);
 
-    const usersFormatted: UserFindAll[] = users.map(
+    const usersFormatted: IUserFilter[] = users.map(
       ({ password, ...user }) => ({
         ...user,
         role: user.role as RoleEnum,
@@ -33,7 +36,7 @@ export class UserRepository {
     return { users: usersFormatted, total };
   }
 
-  async findOne(id: string): Promise<UserFindAll | null> {
+  async findOne(id: string): Promise<IUserFilter | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
@@ -48,7 +51,7 @@ export class UserRepository {
     return { ...userWithoutPassword, role: user.role as RoleEnum };
   }
 
-  async update(id: string, data: Partial<UpdateUserDto>): Promise<UserFindAll> {
+  async update(id: string, data: Partial<UpdateUserDto>): Promise<IUserFilter> {
     const user = await this.prisma.user.update({
       where: { id },
       data,
@@ -62,7 +65,7 @@ export class UserRepository {
     return { ...userWithoutPassword, role: user.role as RoleEnum };
   }
 
-  async remove(id: string): Promise<UserFindAll> {
+  async remove(id: string): Promise<IUserFilter> {
     const user = await this.prisma.user.update({
       where: { id },
       data: {

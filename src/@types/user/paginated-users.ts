@@ -1,7 +1,7 @@
 import { RoleEnum } from 'src/enums/role.enum';
 import { EnterpriseEntity } from 'src/modules/enterprise/entities/enterprise.entity';
 
-interface UserFindAll {
+interface IUserFilter {
   id: string;
   name: string;
   email: string;
@@ -14,9 +14,9 @@ interface UserFindAll {
   enterprise: EnterpriseEntity | null;
 }
 
-interface PaginatedUsers {
-  users: UserFindAll[];
+interface IPaginatedUsers {
+  users: IUserFilter[];
   total: number;
 }
 
-export { UserFindAll, PaginatedUsers };
+export { IUserFilter, IPaginatedUsers };

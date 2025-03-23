@@ -4,6 +4,7 @@ import { UpdateClassDto } from './dto/update-class.dto';
 import { ClassRepository } from './class.repository';
 import { ClassEntity } from './entities/class.entity';
 import { PaginatedClass } from 'src/@types/class/paginated-class';
+import { istanceError } from 'src/helpers/errror.helper';
 
 @Injectable()
 export class ClassService {
@@ -13,7 +14,7 @@ export class ClassService {
     try {
       return await this.repository.create(createClassDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -24,7 +25,7 @@ export class ClassService {
     try {
       return await this.repository.findAll(page, limit);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -32,7 +33,7 @@ export class ClassService {
     try {
       return await this.repository.findOne(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -43,7 +44,7 @@ export class ClassService {
     try {
       return await this.repository.update(id, updateClassDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -51,7 +52,7 @@ export class ClassService {
     try {
       return await this.repository.remove(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 }

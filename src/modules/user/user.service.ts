@@ -27,7 +27,7 @@ export class UserService {
     try {
       return await this.repository.findOne(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -38,7 +38,7 @@ export class UserService {
     try {
       return await this.repository.update(id, updateUserDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -46,7 +46,7 @@ export class UserService {
     try {
       return await this.repository.remove(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 }

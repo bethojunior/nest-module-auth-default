@@ -6,7 +6,7 @@ export interface UserEntity {
   name: string;
   email: string;
   isActive: boolean;
-  role: RoleEnum;
+  role: string;
   enterpriseId?: string | null;
   password?: string;
 

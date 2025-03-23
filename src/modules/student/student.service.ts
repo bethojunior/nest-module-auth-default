@@ -4,6 +4,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentRepository } from './student.repository';
 import { StudentEntity } from './entities/student.entity';
 import { PaginatedStudents } from 'src/@types/student/paginated-student';
+import { istanceError } from 'src/helpers/errror.helper';
 
 @Injectable()
 export class StudentService {
@@ -14,7 +15,7 @@ export class StudentService {
     try {
       return await this.repository.createStudent(createStudentDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -22,7 +23,7 @@ export class StudentService {
     try {
       return await this.repository.findAll();
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -30,7 +31,7 @@ export class StudentService {
     try {
       return await this.repository.findOne(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -41,7 +42,7 @@ export class StudentService {
     try {
       return await this.repository.update(id, updateStudentDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -49,7 +50,7 @@ export class StudentService {
     try {
       return await this.repository.remove(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 }

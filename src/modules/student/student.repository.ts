@@ -64,4 +64,22 @@ export class StudentRepository {
       },
     });
   }
+
+  async findStudentsByClassId(
+    classId: string,
+  ): Promise<StudentEntity[] | Error> {
+    try {
+      return await this.prisma.student.findMany({
+        where: {
+          classId: classId,
+        },
+        include: {
+          class: true,
+          user: true,
+        },
+      });
+    } catch (error) {
+      return new Error(error);
+    }
+  }
 }

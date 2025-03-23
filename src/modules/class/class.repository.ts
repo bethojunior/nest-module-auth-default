@@ -32,15 +32,7 @@ export class ClassRepository {
         this.prisma.class.count(),
       ]);
 
-      const classesFormatted: ClassEntity[] = classes.map((classItem) => ({
-        ...classItem,
-        author: {
-          ...classItem.author,
-          role: classItem.author.role as RoleEnum,
-        },
-      }));
-
-      return { classes: classesFormatted, total };
+      return { classes, total };
     } catch (error) {
       throw new Error(`Erro ao buscar as classes: ${error.message}`);
     }
@@ -50,9 +42,7 @@ export class ClassRepository {
     try {
       const classItem = await this.prisma.class.findUnique({ where: { id } });
 
-      if (!classItem) {
-        throw new Error('Classe não encontrada');
-      }
+      if (!classItem) throw new Error('Classe não encontrada');
 
       return classItem;
     } catch (error) {

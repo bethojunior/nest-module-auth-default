@@ -4,6 +4,7 @@ import { UpdateEnterpriseDto } from './dto/update-enterprise.dto';
 import { EnterpriseRepository } from './enterprise.repository';
 import { EnterpriseEntity } from './entities/enterprise.entity';
 import { PaginatedEnterprises } from 'src/@types/enterprise/paginated-enterprise';
+import { istanceError } from 'src/helpers/errror.helper';
 
 @Injectable()
 export class EnterpriseService {
@@ -14,7 +15,7 @@ export class EnterpriseService {
     try {
       return await this.repository.store(createEnterpriseDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -25,7 +26,7 @@ export class EnterpriseService {
     try {
       return await this.repository.findAll(page, limit);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -33,7 +34,7 @@ export class EnterpriseService {
     try {
       return await this.repository.findOne(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -44,7 +45,7 @@ export class EnterpriseService {
     try {
       return await this.repository.update(id, updateEnterpriseDto);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 
@@ -52,7 +53,7 @@ export class EnterpriseService {
     try {
       return await this.repository.remove(id);
     } catch (error) {
-      return error instanceof Error ? error : new Error(String(error));
+      return istanceError(error);
     }
   }
 }

@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StudentEntity } from './entities/student.entity';
+import { PaginatedStudents } from 'src/@types/student/paginated-student';
 
 @Injectable()
 export class StudentRepository {
@@ -24,8 +25,22 @@ export class StudentRepository {
     });
   }
 
-  async findAll(): Promise<StudentEntity[]> {
-    return await this.prisma.student.findMany();
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedStudents> {
+    const skip = (page - 1) * limit;
+
+    const [students, total] = await this.prisma.$transaction([
+      this.prisma.student.findMany({
+        skip,
+        take: limit,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.enterprise.count(),
+    ]);
+
+    return { students, total };
   }
 
   async update(id: string, data: UpdateStudentDto): Promise<StudentEntity> {

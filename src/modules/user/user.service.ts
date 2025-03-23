@@ -3,6 +3,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserRepository } from './user.repository';
 import { IUserFilter, IPaginatedUsers } from 'src/@types/user/paginated-users';
+import { istanceError } from 'src/helpers/errror.helper';
 
 @Injectable()
 export class UserService {
@@ -14,12 +15,11 @@ export class UserService {
   async findAll(
     page: number = 1,
     limit: number = 10,
-  ): Promise<IPaginatedUsers | Error | string> {
+  ): Promise<IPaginatedUsers | Error> {
     try {
       return await this.repository.findAll(page, limit);
     } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-      return error.message;
+      return istanceError(error);
     }
   }
 
@@ -27,8 +27,7 @@ export class UserService {
     try {
       return await this.repository.findOne(id);
     } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-      return error.message;
+      return error instanceof Error ? error : new Error(String(error));
     }
   }
 
@@ -39,8 +38,7 @@ export class UserService {
     try {
       return await this.repository.update(id, updateUserDto);
     } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-      return error.message;
+      return error instanceof Error ? error : new Error(String(error));
     }
   }
 
@@ -48,8 +46,7 @@ export class UserService {
     try {
       return await this.repository.remove(id);
     } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-      return error.message;
+      return error instanceof Error ? error : new Error(String(error));
     }
   }
 }

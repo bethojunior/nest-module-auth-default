@@ -1,4 +1,4 @@
-import { StudentEntity } from 'src/modules/student/entities/student.entity';
+import { StudentEntity } from 'src/shared/entities/student.entity';
 
 export interface PaginatedStudents {
   students: StudentEntity[];

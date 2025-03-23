@@ -4,15 +4,15 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-import { UserModule } from 'src/modules/user/user.module';
+import { SharedUserModule } from '../shared/user/user.module';
 
 @Module({
   imports: [
-    UserModule,
+    SharedUserModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '48h' },
+      signOptions: { expiresIn: '168h' },
     }),
   ],
   controllers: [AuthController],

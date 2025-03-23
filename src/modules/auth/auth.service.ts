@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { UserEntity } from 'src/shared/entities/user.entity';
 import { RoleEnum } from 'src/enums/role.enum';
 
 @Injectable()

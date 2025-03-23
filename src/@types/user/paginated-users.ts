@@ -1,5 +1,5 @@
 import { RoleEnum } from 'src/enums/role.enum';
-import { EnterpriseEntity } from 'src/modules/enterprise/entities/enterprise.entity';
+import { EnterpriseEntity } from 'src/shared/entities/enterprise.entity';
 
 interface IUserFilter {
   id: string;

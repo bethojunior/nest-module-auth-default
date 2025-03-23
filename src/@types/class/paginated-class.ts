@@ -1,4 +1,4 @@
-import { ClassEntity } from 'src/modules/class/entities/class.entity';
+import { ClassEntity } from 'src/shared/entities/class.entity';
 
 export interface PaginatedClass {
   classes: ClassEntity[];

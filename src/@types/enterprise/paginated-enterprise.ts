@@ -1,4 +1,4 @@
-import { EnterpriseEntity } from 'src/modules/enterprise/entities/enterprise.entity';
+import { EnterpriseEntity } from 'src/shared/entities/enterprise.entity';
 
 export interface PaginatedEnterprises {
   enterprises: EnterpriseEntity[];
